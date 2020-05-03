@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +7,7 @@ using CZT.Core;
 
 namespace CZT.AI
 {
-    class Bot
+    class Bot : IPlayer
     {
         private int winCoef;
         private int loseCoef;
@@ -20,14 +19,29 @@ namespace CZT.AI
         private Player botPlayer;
         private Game currentGame;
 
-        public Bot(Game game, Player father)
+        public int Score { get; set; }
+
+        string IPlayer.Name => Name;
+
+        public int Id => BotID;
+
+        public Bot(Game game, string name, int id)
         {
             winCoef = 10;
             loseCoef = -10;
             neutralCoef = 1;
-            BotID = father.Id;
-            Name = father.Name;
-            botPlayer = father;
+            BotID = id;
+            Name = name;
+            currentGame = game;
+        }
+
+        public Bot(Game game, int id)
+        {
+            winCoef = 10;
+            loseCoef = -10;
+            neutralCoef = 1;
+            BotID = id;
+            Name = "Bot " + Id;
             currentGame = game;
         }
 
@@ -40,13 +54,18 @@ namespace CZT.AI
         {
             var x = rnd.Next(0, currentGame.CurrentLevel.width);
             var y = rnd.Next(0, currentGame.CurrentLevel.height);
-            var point = new Point(x, y);
+            var point = new Point(x, y, BotID);
             if (!currentGame.CurrentLevel.settedPoints.Contains(point))
             {
                 currentGame.CurrentLevel.Map[x, y] = BotID;
                 return;
             }
             else RandomMove();
+        }
+
+        public void MakeMove(Level level)
+        {
+            RandomMove();
         }
     }
 }
