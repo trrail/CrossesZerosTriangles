@@ -6,27 +6,29 @@ using System.Threading.Tasks;
 
 namespace CZT.Core
 {
-    public class Player
+    public class Player : IPlayer
     {
-        public readonly String Name;
-        public readonly int Id;
+        private readonly String name;
+        private readonly int id;
         private int score = 0;
         private List<Line> lines;
         public List<Line> Lines { get; set; }
 
         public int Score { get; set; }
+        public string Name { get { return name; } }
+        public int Id { get { return id; }}
 
         public Player(String name, int id)
         {
-            Id = id;
-            Name = name;
+            this.id = id;
+            this.name = name;
             Lines = new List<Line>();
         }
 
         public Player(int id)
         {
-            Id = id;
-            Name = "player " + Id;
+            this.id = id;
+            this.name = "player " + Id;
         }
 
         public void MakeMove(Level level, int x, int y)

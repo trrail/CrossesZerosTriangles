@@ -8,7 +8,7 @@ using CZT.Core;
 
 namespace CZT.AI
 {
-    class Bot
+    public class Bot : IPlayer
     {
         private int winCoef;
         private int loseCoef;
@@ -19,6 +19,12 @@ namespace CZT.AI
         public readonly string Name;
         private Player botPlayer;
         private Game currentGame;
+
+        public int Score { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        string IPlayer.Name => throw new NotImplementedException();
+
+        public int Id => throw new NotImplementedException();
 
         public Bot(Game game, Player father)
         {
@@ -47,6 +53,11 @@ namespace CZT.AI
                 return;
             }
             else RandomMove();
+        }
+
+        public void MakeMove(Level level)
+        {
+            throw new NotImplementedException();
         }
     }
 }
