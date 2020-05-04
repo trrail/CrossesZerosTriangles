@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace CZT.GUI
 {
@@ -21,7 +23,7 @@ namespace CZT.GUI
             PlayersCount = playersCount;
             RealPlayersCount = realPlayesrCount;
 
-
+            SoundPlayer buttonClick = new SoundPlayer(Properties.Resources.button_click);
             var label = new Label();
             var exitButton = new Button();
             var playButton = new Button();
@@ -68,7 +70,7 @@ namespace CZT.GUI
             back.Location = new Point(1000, 50);
             back.Size = new Size(159, 132);
             back.BackgroundImage = Properties.Resources.back;
-
+            
             // Main Screen Settins
             this.AutoScaleMode = AutoScaleMode.None;
             this.BackColor = Color.FromArgb(237, 238, 240);
@@ -88,9 +90,13 @@ namespace CZT.GUI
             exitButton.ImageAlign = ContentAlignment.BottomCenter;
             exitButton.Location = new Point((int)(ClientSize.Width * 6.6 / 100), (int)(ClientSize.Height / 2) + 140);
             exitButton.Text = "Exit";
+            exitButton.BackgroundImage = Properties.Resources.button;
             exitButton.Size = new Size(200, 50);
+            exitButton.FlatAppearance.BorderSize = 0;
             exitButton.Click += (sender, args) =>
             {
+                buttonClick.Play();
+                Thread.Sleep(150);
                 this.Hide();
                 ExitScreen exitScreen = new ExitScreen();
                 exitScreen.Show();
@@ -103,6 +109,7 @@ namespace CZT.GUI
             playButton.FlatStyle = FlatStyle.Popup;
             playButton.Font = new Font("MV Boli", 20.25F);
             playButton.BackColor = Color.FromArgb(74, 118, 168);
+            playButton.BackgroundImage = Properties.Resources.button;
             playButton.ForeColor = Color.FromArgb(0, 0, 0);
             playButton.ImageAlign = ContentAlignment.BottomCenter;
             playButton.Location = new Point((int)(ClientSize.Width * 6.6 / 100), (int)(ClientSize.Height / 2));
@@ -110,8 +117,10 @@ namespace CZT.GUI
             playButton.Size = new Size(200, 50);
             playButton.Click += (sender, args) =>
             {
+                buttonClick.Play();
+                Thread.Sleep(150);
                 this.Hide();
-                var gameScreen = new GameScreen(Size);
+                GameScreen gameScreen = new GameScreen(this.Size, this.PlayersCount, this.RealPlayersCount, this.PlayersNickNames);
                 gameScreen.Show();
             };
 
@@ -124,12 +133,15 @@ namespace CZT.GUI
             exitFromSettingsButton.Text = "Back to Main menu";
             exitFromSettingsButton.FlatStyle = FlatStyle.Popup;
             exitFromSettingsButton.ForeColor = Color.FromArgb(0, 0, 0);
+            exitFromSettingsButton.BackgroundImage = Properties.Resources.button;
             exitFromSettingsButton.ImageAlign = ContentAlignment.BottomCenter;
             exitFromSettingsButton.Location = new Point((int)(ClientSize.Width * 6.6 / 100), (int)(ClientSize.Height / 2) + 140);
             exitFromSettingsButton.Size = new Size(200, 50);
             exitFromSettingsButton.BackColor = Color.FromArgb(74, 118, 168);
             exitFromSettingsButton.Click += (sender, args) =>
             {
+                buttonClick.Play();
+                Thread.Sleep(150);
                 playButton.Show();
                 exitButton.Show();
                 settingsButton.Show();
@@ -152,6 +164,7 @@ namespace CZT.GUI
             settingsButton.Cursor = Cursors.Hand;
             settingsButton.Font = new Font("MV Boli", 20.25F);
             settingsButton.Text = "Settings";
+            settingsButton.BackgroundImage = Properties.Resources.button;
             settingsButton.FlatStyle = FlatStyle.Popup;
             settingsButton.ForeColor = Color.FromArgb(0, 0, 0);
             settingsButton.ImageAlign = ContentAlignment.BottomCenter;
@@ -160,6 +173,8 @@ namespace CZT.GUI
             settingsButton.BackColor = Color.FromArgb(74, 118, 168);
             settingsButton.Click += (sender, args) =>
             {
+                buttonClick.Play();
+                Thread.Sleep(150);
                 playButton.Hide();
                 exitButton.Hide();
                 settingsButton.Hide();

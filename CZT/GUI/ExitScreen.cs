@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Media;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CZT.GUI
@@ -12,6 +13,7 @@ namespace CZT.GUI
     {
         public ExitScreen()
         {
+            SoundPlayer buttonClick = new SoundPlayer(Properties.Resources.button_click);
             var cancelButton = new Button();
             var exitButton = new Button();
             var label = new Label();
@@ -44,6 +46,8 @@ namespace CZT.GUI
             exitButton.Size = new Size(100, 50);
             exitButton.Click += (sender, args) =>
             {
+                buttonClick.Play();
+                Thread.Sleep(150);
                 Application.Exit();
             };
 
@@ -60,6 +64,8 @@ namespace CZT.GUI
             cancelButton.Size = new Size(100, 50);
             cancelButton.Click += (sender, args) =>
             {
+                buttonClick.Play();
+                Thread.Sleep(150);
                 this.Hide();
                 var mainMenu = new MainScreen(5, 3, 3);
                 mainMenu.Show();

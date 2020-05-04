@@ -3,22 +3,32 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
+using System.Media;
 
 namespace CZT.GUI
 {
     class GameScreen : Form
     {
-        //private Game game; здесь будет класс игры
-        private int PlayersCount;
-
+        public Core.Game game;
         TableLayoutPanel table;
-        public GameScreen(int size)
+        private int[,] Map;
+        private int Size;
+
+        public GameScreen(int size, int playersCount, int realPlayersCount, List<string> playersNames)
         {
+            this.Size = size;
+            this.game = new Core.Game(playersNames, 3, 3);
+            this.game.StartLevel(size, size);
+            SoundPlayer gameMedia = new SoundPlayer(Properties.Resources.bensound_punky);
+            SoundPlayer buttonClick = new SoundPlayer(Properties.Resources.button_click);
+            gameMedia.PlayLooping();
             var exitButton = new Button();
             table = new TableLayoutPanel();
             table.BackColor = Color.FromArgb(173, 216, 230);
+            table.Location = new Point(2, 2);
+            table.Size = new Size(76 * size, 76 * size);
             for (int i = 0; i < size; i++)
             {
                 table.RowStyles.Add(new RowStyle(SizeType.Percent, 100f / size));
@@ -29,20 +39,24 @@ namespace CZT.GUI
                 {
                     var button = new Button();
                     button.BackColor = Color.FromArgb(255, 255, 255);
-                    button.Size = new Size(74, 74);
-                    button.Dock = DockStyle.Fill;
+                    button.Size = new Size(66, 66);
                     button.FlatStyle = FlatStyle.Standard;
-                    button.Click += MakeMove;
+                    button.Click += (senders, args) =>
+                    {
+                        var position = table.GetCellPosition((Control)senders);
+                        this.game.CurrentLevel.MakeMove(position.Column, position.Row);
+                        this.Map = this.game.CurrentLevel.Map;
+                        ChangeMap();
+                    };
                     table.Controls.Add(button, column, row);
                 }
-            table.Size = new Size(74 * size, 74 * size);
 
 
             // Game Screen Settins
             this.AutoScaleMode = AutoScaleMode.None;
             this.BackColor = Color.FromArgb(173, 216, 230);
-            this.ClientSize = new Size(74 * size, 74 * size + 60);
-            this.MinimumSize = new Size(74 * size, 74 * size + 60);
+            this.ClientSize = new Size(76 * size, 76 * size + 60);
+            this.MinimumSize = new Size(76 * size, 76 * size+ 60);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.None;
 
@@ -59,6 +73,9 @@ namespace CZT.GUI
             exitButton.Size = new Size(180, 40);
             exitButton.Click += (sender, args) =>
             {
+                buttonClick.Play();
+                Thread.Sleep(150);
+                gameMedia.Stop();
                 this.Hide();
                 var mainScreen = new MainScreen(size, 3, 3);
                 mainScreen.Show();
@@ -68,11 +85,26 @@ namespace CZT.GUI
             Controls.Add(exitButton);
         }
 
-        void MakeMove(object sender, EventArgs e)
+        void ChangeMap()
         {
-            var position = table.GetCellPosition((Control)sender);
-            var button = (Button)table.GetControlFromPosition(position.Column, position.Row);
-            button.BackgroundImage = Properties.Resources.triangle;
+            for (var x = 0; x < this.Size; x++)
+                for (var y = 0; y < this.Size; y++)
+                {
+                    var button = (Button)table.GetControlFromPosition(x, y);
+                    var sym = this.Map[x, y];
+                    switch(sym)
+                    {
+                        case 1:
+                            button.BackgroundImage = Properties.Resources.circle;
+                            break;
+                        case 2:
+                            button.BackgroundImage = Properties.Resources.cross;
+                            break;
+                        case 3:
+                            button.BackgroundImage = Properties.Resources.triangle;
+                            break;
+                    }
+                }
         }
     }
 }

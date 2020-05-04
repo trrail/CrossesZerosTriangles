@@ -82,8 +82,9 @@ namespace CZT.Core
                 {
                     game.Players[i].MakeMove(this);
                 }
+                currentPlayerInd = 0;
             }
-            currentPlayerInd = 0;
+
             /* var winner = GetWinner();
              if (winner != null)
                  EndLevel();*/
